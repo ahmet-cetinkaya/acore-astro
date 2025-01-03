@@ -1,0 +1,26 @@
+{
+  "name": "acore-astro",
+  "version": "1.0.0",
+  "description": "Core Astro package with reusable implementations and helper code snippets for various software development needs.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahmetcetinkaya/acore-astro.git"
+  },
+  "author": {
+    "name": "Ahmet Çetinkaya",
+    "email": "contact@ahmetcetinkaya.me"
+  },
+  "type": "module",
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "astro": "^5.1.2"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
