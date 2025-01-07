@@ -37,6 +37,7 @@ export type Props = {
   extend?: {
     meta?: { name: string; content: string }[];
   };
+  webAppManifestPath?: string;
 };
 const props = Astro.props;
 
@@ -118,7 +119,9 @@ const canonicalUrl =  (typeof props.canonicalURL === "string" ? new URL(props.ca
 }
 
 <!-- Progressive Web App Settings -->
-<link rel="manifest" href="/manifest.json" />
+{
+  props.webAppManifestPath && <link rel="manifest" href={props.webAppManifestPath} />
+}
 
 <!-- Browser and Platform Specific Settings -->
 <!-- Sitemap -->
