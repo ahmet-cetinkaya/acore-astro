@@ -1,0 +1,108 @@
+---
+export interface Props {
+  animation?: 'fade-up' | 'fade-in' | 'slide-left' | 'slide-right' | 'scale-up';
+  delay?: number;
+  duration?: number;
+  class?: string;
+}
+
+const { 
+  animation = 'fade-up', 
+  delay = 0, 
+  duration = 800,
+  class: className = '',
+  ...rest 
+} = Astro.props;
+
+const animationId = `anim-${Math.random().toString(36).substr(2, 9)}`;
+---
+
+<div 
+  class={`animated-section ${className}`}
+  data-animation={animation}
+  data-delay={delay}
+  data-duration={duration}
+  data-id={animationId}
+  {...rest}
+>
+  <slot />
+</div>
+
+<style>
+  .animated-section {
+    opacity: 0;
+    transition-property: opacity, transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .animated-section[data-animation="fade-up"] {
+    transform: translateY(20px);
+  }
+
+  .animated-section[data-animation="fade-in"] {
+    transform: none;
+  }
+
+  .animated-section[data-animation="slide-left"] {
+    transform: translateX(-20px);
+  }
+
+  .animated-section[data-animation="slide-right"] {
+    transform: translateX(20px);
+  }
+
+  .animated-section[data-animation="scale-up"] {
+    transform: scale(0.95);
+  }
+
+  .animated-section.animate-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .animated-section {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<script>
+  // Intersection Observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const element = entry.target as HTMLElement;
+        const delay = parseInt(element.dataset.delay || '0');
+        const duration = parseInt(element.dataset.duration || '800');
+        
+        // Set transition duration
+        element.style.transitionDuration = `${duration}ms`;
+        
+        // Apply animation with delay
+        setTimeout(() => {
+          element.classList.add('animate-in');
+        }, delay);
+        
+        // Stop observing once animated
+        observer.unobserve(element);
+      }
+    });
+  }, observerOptions);
+
+  // Observe all animated sections
+  document.addEventListener('DOMContentLoaded', () => {
+    const animatedSections = document.querySelectorAll('.animated-section');
+    animatedSections.forEach((section) => {
+      observer.observe(section);
+    });
+  });
+</script>
