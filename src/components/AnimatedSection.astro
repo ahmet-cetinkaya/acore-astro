@@ -77,32 +77,35 @@ const animationId = `anim-${Math.random().toString(36).substring(2, 11)}`;
     rootMargin: '0px 0px -50px 0px'
   };
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const element = entry.target as HTMLElement;
-        const delay = parseInt(element.dataset.delay || '0');
-        const duration = parseInt(element.dataset.duration || '800');
-        
-        // Set transition duration
-        element.style.transitionDuration = `${duration}ms`;
-        
-        // Apply animation with delay
-        setTimeout(() => {
-          element.classList.add('animate-in');
-        }, delay);
-        
-        // Stop observing once animated
-        observer.unobserve(element);
-      }
-    });
-  }, observerOptions);
+  const setupObserver = () => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const element = entry.target as HTMLElement;
+          const delay = parseInt(element.dataset.delay || '0');
+          const duration = parseInt(element.dataset.duration || '800');
+          
+          // Set transition duration
+          element.style.transitionDuration = `${duration}ms`;
+          
+          // Apply animation with delay
+          setTimeout(() => {
+            element.classList.add('animate-in');
+          }, delay);
+          
+          // Stop observing once animated
+          observer.unobserve(element);
+        }
+      });
+    }, observerOptions);
 
-  // Observe all animated sections
-  document.addEventListener('DOMContentLoaded', () => {
     const animatedSections = document.querySelectorAll('.animated-section');
     animatedSections.forEach((section) => {
+      // Create a clean slate if needed, though usually new DOM nodes
       observer.observe(section);
     });
-  });
+  };
+
+  // Run on initial load and after view transitions
+  document.addEventListener('astro:page-load', setupObserver);
 </script>
